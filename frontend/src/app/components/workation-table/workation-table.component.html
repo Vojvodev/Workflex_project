@@ -1,0 +1,60 @@
+<div class="card">
+  @if (loading) {
+    <p class="state">Loading workations…</p>
+  } @else if (error) {
+    <p class="state error">{{ error }}</p>
+  } @else {
+    <table class="workation-table">
+      <thead>
+        <tr>
+          @for (col of columns; track col.key) {
+            <th
+              (click)="sortBy(col.key)"
+              [class.numeric]="col.key === 'workingDays'"
+              [attr.aria-sort]="sortIndicator(col.key)">
+              <span class="th-content">
+                {{ col.label }}
+                <span class="sort-arrows" [attr.data-sort]="sortIndicator(col.key)">
+                  <span class="arrow up">▲</span>
+                  <span class="arrow down">▼</span>
+                </span>
+              </span>
+            </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (w of workations; track trackById($index, w)) {
+          <tr>
+            <td class="employee">{{ w.employee }}</td>
+            <td>
+              <span class="country">
+                @if (flag(w.origin); as src) {
+                  <img class="flag" [src]="src" [alt]="w.origin + ' flag'" />
+                }
+                <span class="country-name">{{ w.origin }}</span>
+              </span>
+            </td>
+            <td>
+              <span class="country">
+                @if (flag(w.destination); as src) {
+                  <img class="flag" [src]="src" [alt]="w.destination + ' flag'" />
+                }
+                <span class="country-name">{{ w.destination }}</span>
+              </span>
+            </td>
+            <td>{{ w.start | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ w.end | date: 'dd/MM/yyyy' }}</td>
+            <td class="numeric">{{ w.workingDays }}</td>
+            <td>
+              <span class="risk" [class]="risk(w.risk).cssClass">
+                <img class="risk-icon" [src]="risk(w.risk).icon" [alt]="risk(w.risk).label" />
+                <span class="risk-label">{{ risk(w.risk).label }}</span>
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>
